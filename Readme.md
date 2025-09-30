@@ -45,4 +45,4 @@ pip install -r requirements.txt
 python3 ./src/script.py
 
 # Run testscript
-python3 ./test/testscript.py
+python3 ./test/test_script.py
