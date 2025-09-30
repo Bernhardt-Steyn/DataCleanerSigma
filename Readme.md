@@ -1,12 +1,12 @@
 # Sigma Connect Take Home Assignment
 This project solves the basic situation outlined below:
-Your company ingests customer transaction data from different sources each day.
-The data arrives in different formats (CSV, JSON, XML), contains inconsistencies and errors, and uses multiple currencies.
+The company ingests customer transaction data from different sources each day.
+The data arrives in different formats (CSV, JSON, XML), containing inconsistencies and errors, and uses multiple currencies.
 
 ## Features
 This project reads from three sources (JSON, CSV, XML) then combines the common fields from these sources into two output CSV files:
 - One file that only contains records with no suspicious data present.
-- One file that contains all data with suspicious values.
+- One file that contains all data with suspicious values. <br>
 Key features:
 - Attempts to load the Frankfurter API for accurate currency conversion.
 - Adds a flag column to the suspicious data CSV that clearly shows the reasons why a record is determined to be suspicious (e.g., negative transaction amounts).
@@ -14,7 +14,7 @@ Key features:
 - Handles inconsistent data entry in records (e.g., in the XML file the date and time are stored inconsistently; this project standardizes them before splitting values into date and time).
 - Ensures that the time and date are entered correctly after splitting (e.g., if the date was incorrect but the time was correct, the project only flags the date, and vice versa. If both are missing or incorrect, the project flags both).
 - Includes a unit testing script to validate functions from the main script.
-- All currency is standardized to USD using live rates from the  [Frankfurter API](https://www.frankfurter.dev/
+- All currencies are standardized to USD using live rates from the Frankfurter API(https://www.frankfurter.dev/).
 This is only performed on the cleaned DataFrame to save computational resources and time.
 - Saves the final outputs into two CSV files for ease of use by analysts as mentioned above.
 
