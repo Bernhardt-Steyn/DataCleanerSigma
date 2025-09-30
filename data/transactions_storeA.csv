@@ -1,0 +1,7 @@
+transaction_id,source,customer_id,amount,currency,timestamp,payment_method,store_id
+S-A-1001,store,84219,149.99,ZAR,2025-08-31T09:12:45+02:00,card,CT-01
+S-A-1002,store,84220,79.50,ZAR,2025-08-31T10:05:10+02:00,cash,CT-01
+S-A-1003,store,,120.00,ZAR,2025-08-31T11:22:00+02:00,card,CT-02
+S-A-1004,store,84222,-5.00,ZAR,2025-08-31T12:05:30+02:00,card,CT-01
+S-A-1005,store,84223,19.99,USD,2025-08-31T12:30:00+02:00,card,CT-03
+S-A-1006,store,84224,0,ZAR,2025-08-31T13:45:12+02:00,card,CT-02
