@@ -7,7 +7,7 @@ The data arrives in different formats (CSV, JSON, XML), containing inconsistenci
 This project reads from three sources (JSON, CSV, XML) then combines the common fields from these sources into two output CSV files:
 - One file that only contains records with no suspicious data present.
 - One file that contains all data with suspicious values. <br>
-Key features:
+#### Key features:
 - Attempts to load the Frankfurter API for accurate currency conversion.
 - Adds a flag column to the suspicious data CSV that clearly shows the reasons why a record is determined to be suspicious (e.g., negative transaction amounts).
 - Handles inconsistent data by enforcing a naming convention on the DataFrames generated from the sources (e.g., renaming the id column from the JSON source to transaction_id to match other sources).
