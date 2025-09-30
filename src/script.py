@@ -52,19 +52,27 @@ def flag(row):
     flags = []
     if row['customer_id'] == 'C--1':
         flags.append('Invalid Customer ID')
-    if row['transaction_id'] == None:
+    if pd.isna(row['transaction_id']):
         flags.append('Invalid Transaction ID')
-    if row['date'] == '_':
+    if  pd.isna(row['date']) or row['date'] == '_':
         flags.append('Invalid Date Value')
-    if row['time'] is pd.NA:
+    elif ':' in row['date']:
+        flags.append('Invalid Date Value')
+    elif row['date'].count('-') != 2:
+        flags.append('Invalid Date Value')
+    if pd.isna(row['time']):
+        flags.append('Invalid Time Value')
+    elif row['time'].count(':') != 3:
+        flags.append('Invalid Time Value')
+    elif row['time'].count(r'\+') != 1:
         flags.append('Invalid Time Value')
     if row['amount'] <= 0:
         flags.append('Invalid Amount')
     if row['currency'] not in current_prices['rates'] and row['currency'] != current_prices['base']:
         flags.append('Invalid Currency')
-    if row['payment_method'] == None:
+    if pd.isna(row['payment_method']):
         flags.append('Invalid Payment Method')
-    if row['source_id'] == None:
+    if pd.isna(row['source_id']):
         flags.append('Invalid Source ID')
     return flags
 
@@ -137,6 +145,8 @@ try:
     df_json['amount'] = df_json['total'].apply(lambda x: x.get('amount') if isinstance(x, dict) else None)
     df_json['currency'] = df_json['total'].apply(lambda x: x.get('currency') if isinstance(x, dict) else None)
     df_json[['date', 'time']] = df_json['occurred_at'].astype('string').str.replace(r'[a-zA-Z]', ' ', regex=True).str.strip().str.split(' ', expand=True)
+    mask = df_json['date'].str.contains(':')
+    df_json.loc[mask, ['date', 'time']] = df_json.loc[mask, ['time', 'date']].values
     df_json.drop(columns=['occurred_at'])
 except:
     print("ERROR: Incorrect JSON file format")
@@ -151,10 +161,13 @@ try:
     df_csv[['date', 'time']] = df_csv['timestamp'].astype('string').str.replace(r'[a-zA-Z]', ' ', regex=True).str.strip().str.split(' ', expand=True)
     df_csv.drop(columns=['timestamp'], inplace=True)
     df_csv.rename(columns = {'store_id': 'source_id'}, inplace=True)
+    mask = df_csv['date'].str.contains(':')
+    df_csv.loc[mask, ['date', 'time']] = df_csv.loc[mask, ['time', 'date']].values
+    
 except:
     print("ERROR: Incorrect CSV file format")
     exit(1)
-
+df_csv.fillna(pd.NA)
 # This section cleans and standardise the columns from the XML file
 # if the section incounters an error the program displays an error message before exiting with an error code
 try:
@@ -165,6 +178,8 @@ try:
     df_xml['time'] = df_xml['time'] + str('+00:00')
     df_xml.drop(columns=['when_raw'], inplace=True)
     df_xml.rename(columns = {'source': 'source_id'}, inplace=True)
+    mask = df_xml['date'].str.contains(':')
+    df_xml.loc[mask, ['date', 'time']] = df_xml.loc[mask, ['time', 'date']].values
 except:
     print("ERROR: Incorrect XML file format")
     exit(1)
@@ -184,9 +199,10 @@ except:
 # This section adds a flags column to the new dataframe which is generated using the flag method
 # if the section incounters an error the program displays an error message before exiting with an error code
 try:
-    df_flag = pd.concat([df_final[df_final['amount'] <= 0], df_final[df_final['customer_id'].str.contains('C--1', na=False)], df_final[df_final['transaction_id'] == None],
-                         df_final[df_final['date'] == '_'], df_final[pd.isna(df_final['time'])], df_final[df_final['payment_method'] == None],
-                         df_final[df_final['source_id'] == None]], ignore_index=True)
+    df_flag = pd.concat([df_final[df_final['amount'] <= 0], df_final[df_final['customer_id'].str.contains('C--1', na=False)], df_final[pd.isna(df_final['transaction_id'])],
+                         df_final[df_final['date'] == '_'], df_final[pd.isna(df_final['time'])], df_final[pd.isna(df_final['payment_method'])],
+                         df_final[pd.isna(df_final['source_id'])], df_final[df_final['date'].str.contains(':', na=False)], df_final[pd.isna(df_final['date'])],
+                         df_final[df_final['date'].fillna("").str.count('-') != 2], df_final[df_final['time'].fillna("").str.count(':') != 3], df_final[df_final['time'].fillna("").str.count(r'\+') != 1]], ignore_index=True)
     df_flag = df_flag.drop_duplicates()
     df_flag['flags'] = df_flag.apply(flag, axis=1)
 except:
@@ -198,12 +214,17 @@ except:
 # if the section incounters an error the program displays an error message before exiting with an error code
 try:
     df_final = df_final[~df_final['customer_id'].str.contains('C--1', na=False)]
-    df_final = df_final[df_final['transaction_id'] != None]
+    df_final = df_final[~df_final['date'].str.contains(':', na=False)]
+    df_final = df_final[~pd.isna(df_final['transaction_id'])]
     df_final = df_final[df_final['date'] != '_']
+    df_final = df_final[~pd.isna(df_final['date'])]
+    df_final = df_final[df_final['date'].fillna("").str.count('-') == 2]
     df_final = df_final[~pd.isna(df_final['time'])]
+    df_final = df_final[df_final['time'].fillna("").str.count(':') == 3]
+    df_final = df_final[df_final['time'].fillna("").str.count(r'\+') == 1]
     df_final = df_final[df_final['amount'] > 0]
-    df_final = df_final[df_final['payment_method'] != None]
-    df_final = df_final[df_final['source_id'] != None]
+    df_final = df_final[~pd.isna(df_final['payment_method'])]
+    df_final = df_final[~pd.isna(df_final['source_id'])]
 except:
     print("ERROR: Failed to remove suspecious entries")
     exit(1)

@@ -50,19 +50,31 @@ class TestMain(unittest.TestCase):
     # Tests how flag method handles a invalid customer id
     # Correct output return the "'Invalid Customer ID'" flag
     def test_FLAG_CUSTOMER_ID_INVALID(self):
-        row = {"customer_id" : "C--1", "transaction_id" : "S-A_1001", "date" : "2011-02-04", "time" : "07:14:03+00:00", "amount" : 300, "currency" : "USD", "payment_method" : "card", "source_id" : "online"}
+        row = {"customer_id" : "C--1", "transaction_id" : "S-A_1001", "date" : "2011-02-04", "time" : r"07:14:03\+00:00", "amount" : 300, "currency" : "USD", "payment_method" : "card", "source_id" : "online"}
         result = script.flag(row)
         self.assertIn('Invalid Customer ID', result)
     # Tests how flag method handles a invalid transaction id
     # Correct output return the "'Invalid Transaction ID'" flag
     def test_FLAG_TRANSACTION_ID_INVALID(self):
-        row = {"customer_id" : "C-900", "transaction_id" : None, "date" : "2011-02-04", "time" : "07:14:03+00:00", "amount" : 300, "currency" : "USD", "payment_method" : "card", "source_id" : "online"}
+        row = {"customer_id" : "C-900", "transaction_id" : None, "date" : "2011-02-04", "time" : r"07:14:03\+00:00", "amount" : 300, "currency" : "USD", "payment_method" : "card", "source_id" : "online"}
         result = script.flag(row)
         self.assertIn('Invalid Transaction ID', result)
     # Tests how flag method handles a invalid date
     # Correct output return the "'Invalid Date Value'" flag
     def test_FLAG_DATE_INVALID(self):
-        row = {"customer_id" : "C-900", "transaction_id" : "S-A_1001", "date" : "_", "time" : "07:14:03+00:00", "amount" : 300, "currency" : "USD", "payment_method" : "card", "source_id" : "online"}
+        row = {"customer_id" : "C-900", "transaction_id" : "S-A_1001", "date" : "_", "time" : r"07:14:03+00:00", "amount" : 300, "currency" : "USD", "payment_method" : "card", "source_id" : "online"}
+        result = script.flag(row)
+        self.assertIn('Invalid Date Value', result)
+    # Tests how flag method handles a invalid date
+    # Correct output return the "'Invalid Date Value'" flag
+    def test_FLAG_DATE_INVALID_format01(self):
+        row = {"customer_id" : "C-900", "transaction_id" : "S-A_1001", "date" : "2011-0204", "time" : r"07:14:03+00:00", "amount" : 300, "currency" : "USD", "payment_method" : "card", "source_id" : "online"}
+        result = script.flag(row)
+        self.assertIn('Invalid Date Value', result)
+    # Tests how flag method handles a invalid date
+    # Correct output return the "'Invalid Date Value'" flag
+    def test_FLAG_DATE_INVALID_format02(self):
+        row = {"customer_id" : "C-900", "transaction_id" : "S-A_1001", "date" : "2011-02-04:", "time" : r"07:14:03+00:00", "amount" : 300, "currency" : "USD", "payment_method" : "card", "source_id" : "online"}
         result = script.flag(row)
         self.assertIn('Invalid Date Value', result)
     # Tests how flag method handles a time date
@@ -71,34 +83,46 @@ class TestMain(unittest.TestCase):
         row = {"customer_id" : "C-900", "transaction_id" : "S-A_1001", "date" : "2011-02-04", "time" : pd.NA, "amount" : 300, "currency" : "USD", "payment_method" : "card", "source_id" : "online"}
         result = script.flag(row)
         self.assertIn('Invalid Time Value', result)
+    # Tests how flag method handles a time date
+    # Correct output return the "'Invalid Time Value'" flag
+    def test_FLAG_TIME_INVALID_Format01(self):
+        row = {"customer_id" : "C-900", "transaction_id" : "S-A_1001", "date" : "2011-02-04", "time" : r"07:14:0300:00", "amount" : 300, "currency" : "USD", "payment_method" : "card", "source_id" : "online"}
+        result = script.flag(row)
+        self.assertIn('Invalid Time Value', result)
+    # Tests how flag method handles a time date
+    # Correct output return the "'Invalid Time Value'" flag
+    def test_FLAG_TIME_INVALID_format02(self):
+        row = {"customer_id" : "C-900", "transaction_id" : "S-A_1001", "date" : "2011-02-04", "time" : r"07:1403\+00:00", "amount" : 300, "currency" : "USD", "payment_method" : "card", "source_id" : "online"}
+        result = script.flag(row)
+        self.assertIn('Invalid Time Value', result)
     # Tests how flag method handles a invalid amount
     # Correct output return the "'Invalid Amount'" flag
     def test_FLAG_AMOUNT_INVALID(self):
-        row = {"customer_id" : "C-900", "transaction_id" : "S-A_1001", "date" : "2011-02-04", "time" : "07:14:03+00:00", "amount" : -1, "currency" : "USD", "payment_method" : "card", "source_id" : "online"}
+        row = {"customer_id" : "C-900", "transaction_id" : "S-A_1001", "date" : "2011-02-04", "time" : r"07:14:03\+00:00", "amount" : -1, "currency" : "USD", "payment_method" : "card", "source_id" : "online"}
         result = script.flag(row)
         self.assertIn('Invalid Amount', result)
     # Tests how flag method handles a invalid currency
     # Correct output return the "'Invalid Currency'" flag
     def test_FLAG_CURRENCY_INVALID(self):
-        row = {"customer_id" : "C-900", "transaction_id" : "S-A_1001", "date" : "2011-02-04", "time" : "07:14:03+00:00", "amount" : 300, "currency" : "USDEUR", "payment_method" : "card", "source_id" : "online"}
+        row = {"customer_id" : "C-900", "transaction_id" : "S-A_1001", "date" : "2011-02-04", "time" : r"07:14:03\+00:00", "amount" : 300, "currency" : "USDEUR", "payment_method" : "card", "source_id" : "online"}
         result = script.flag(row)
         self.assertIn('Invalid Currency', result)
     # Tests how flag method handles a invalid payment method
     # Correct output return the "'Invalid Payment Method'" flag
     def test_FLAG_PAYMENT_METHOD_INVALID(self):
-        row = {"customer_id" : "C-900", "transaction_id" : "S-A_1001", "date" : "2011-02-04", "time" : "07:14:03+00:00", "amount" : 300, "currency" : "USD", "payment_method" : None, "source_id" : "online"}
+        row = {"customer_id" : "C-900", "transaction_id" : "S-A_1001", "date" : "2011-02-04", "time" : r"07:14:03\+00:00", "amount" : 300, "currency" : "USD", "payment_method" : None, "source_id" : "online"}
         result = script.flag(row)
         self.assertIn('Invalid Payment Method', result)
     # Tests how flag method handles a invalid source id
     # Correct output return the "'Invalid Source ID'" flag
     def test_FLAG_SOURCE_INVALID(self):
-        row = {"customer_id" : "C-900", "transaction_id" : "S-A_1001", "date" : "2011-02-04", "time" : "07:14:03+00:00", "amount" : 300, "currency" : "USD", "payment_method" : "card", "source_id" : None}
+        row = {"customer_id" : "C-900", "transaction_id" : "S-A_1001", "date" : "2011-02-04", "time" : r"07:14:03\+00:00", "amount" : 300, "currency" : "USD", "payment_method" : "card", "source_id" : None}
         result = script.flag(row)
         self.assertIn('Invalid Source ID', result)
     # Tests how flag method handles a valid input
     # Correct output returns a empty list with no flags
     def test_FLAG_VALID(self):
-        row = {"customer_id" : "C-900", "transaction_id" : "S-A_1001", "date" : "2011-02-04", "time" : "07:14:03+00:00", "amount" : 300, "currency" : "USD", "payment_method" : "card", "source_id" : "online"}
+        row = {"customer_id" : "C-900", "transaction_id" : "S-A_1001", "date" : "2011-02-04", "time" : r"07:14:03\+00:00", "amount" : 300, "currency" : "USD", "payment_method" : "card", "source_id" : "online"}
         result = script.flag(row)
         self.assertNotIn('Invalid Customer ID', result)
         self.assertNotIn('Invalid Transaction ID', result)
