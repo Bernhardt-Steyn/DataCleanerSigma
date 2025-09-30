@@ -36,3 +36,10 @@ venv\Scripts\activate      # Windows
 # Install requirements
 pip install -r requirements.txt
 
+# Store data source files in the data directory
+
+# Run program
+python3 ./src/script.py
+
+# Run testscript
+python3 ./test/testscript.py
