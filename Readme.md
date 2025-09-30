@@ -39,7 +39,7 @@ venv\Scripts\activate      # Windows
 # Install requirements
 pip install -r requirements.txt
 
-# Store data source files in the data directory
+# All provide data sources are located in the data directory. New sources should be stored in this directory as well. The path flags will also need to be altered for the project to read new data sources.
 
 # Run program
 python3 ./src/script.py
