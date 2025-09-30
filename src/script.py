@@ -35,7 +35,7 @@ if response.status_code != 200:
         exit(1)
     
 
-# Gets the infromation from the API in JSON format
+# Gets the information from the API in JSON format
 current_prices = response.json()
 
 # This function converts currency value to USD using the data from the frankfurter API
@@ -134,7 +134,7 @@ def open_xml(FilePath):
 
 
 # This section cleans and standardise the columns from the JSON file
-# if the section incounters an error the program displays an error message before exiting with an error code
+# if the section encounters an error the program displays an error message before exiting with an error code
 try:
     df_json = open_json(JSON_PATH)
     df_json.rename(columns = {'id': 'transaction_id'}, inplace=True)
@@ -153,7 +153,7 @@ except:
     exit(1)
 
 # This section cleans and standardise the columns from the CSV file
-# if the section incounters an error the program displays an error message before exiting with an error code
+# if the section encounters an error the program displays an error message before exiting with an error code
 try:
     df_csv = open_csv(CSV_PATH)
     df_csv['customer_id'] = pd.to_numeric(df_csv['customer_id'], errors='coerce').fillna(-1).astype(int)
@@ -169,7 +169,7 @@ except:
     exit(1)
 df_csv.fillna(pd.NA)
 # This section cleans and standardise the columns from the XML file
-# if the section incounters an error the program displays an error message before exiting with an error code
+# if the section encounters an error the program displays an error message before exiting with an error code
 try:
     df_xml = open_xml(XML_PATH)
     df_xml['customer_id'] = pd.to_numeric(df_xml['customer_id'], errors='coerce').fillna(-1).astype(int)
@@ -187,7 +187,7 @@ except:
 
 
 # This section merges the now standardised data from the various sources
-# if the section incounters an error the program displays an error message before exiting with an error code
+# if the section encounters an error the program displays an error message before exiting with an error code
 try:
     df_final = pd.concat([df_json[['customer_id', 'transaction_id','date', 'time', 'amount', 'currency', 'payment_method', 'source_id']], df_csv[['customer_id', 'transaction_id','date', 'time', 'amount', 'currency', 'payment_method', 'source_id']]], ignore_index=True)
     df_final = pd.concat([df_final, df_xml[['customer_id', 'transaction_id','date', 'time', 'amount', 'currency', 'payment_method', 'source_id']]], ignore_index=True)
@@ -197,7 +197,7 @@ except:
 
 # This section collects suspicious data into a dataframe so as to be easily examined
 # This section adds a flags column to the new dataframe which is generated using the flag method
-# if the section incounters an error the program displays an error message before exiting with an error code
+# if the section encounters an error the program displays an error message before exiting with an error code
 try:
     df_flag = pd.concat([df_final[df_final['amount'] <= 0], df_final[df_final['customer_id'].str.contains('C--1', na=False)], df_final[pd.isna(df_final['transaction_id'])],
                          df_final[df_final['date'] == '_'], df_final[pd.isna(df_final['time'])], df_final[pd.isna(df_final['payment_method'])],
@@ -211,7 +211,7 @@ except:
 
 
 # This section removes suspicious from the clean dataframe
-# if the section incounters an error the program displays an error message before exiting with an error code
+# if the section encounters an error the program displays an error message before exiting with an error code
 try:
     df_final = df_final[~df_final['customer_id'].str.contains('C--1', na=False)]
     df_final = df_final[~df_final['date'].str.contains(':', na=False)]
@@ -232,7 +232,7 @@ except:
 
 # This section converts all the amount values in the clean dataframe to USD
 # The convert_currency method if used to achive this
-# if the section incounters an error the program displays an error message before exiting with an error code
+# if the section encounters an error the program displays an error message before exiting with an error code
 try:
     df_final['amount'] = [convert_currency(a,c) for a,c in zip(df_final['amount'], df_final['currency'])]
     df_final['currency'] = 'USD'
@@ -265,7 +265,7 @@ if CURRENCY_PRINT_FLAG:
 
 
 # Final section saves clean and flagged dataframes to seperate CSV files for use by analyst
-# if the section incounters an error the program displays an error message before exiting with an error code
+# if the section encounters an error the program displays an error message before exiting with an error code
 try:
     df_flag.to_csv('./output/FlaggedEntries.csv', index=False)
     df_final.to_csv('./output/CleanEntries.csv', index=False)

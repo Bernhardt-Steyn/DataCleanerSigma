@@ -1,26 +1,29 @@
 # Sigma Connect Take Home Assignment
-This project solves the basic situtation outlined below:
+This project solves the basic situation outlined below:
 Your company ingests customer transaction data from different sources each day.
-The data arrives in different formats (CSV, JSON, XML), contains inconsistencies
-and errors, and uses multiple currencies.
+The data arrives in different formats (CSV, JSON, XML), contains inconsistencies and errors, and uses multiple currencies.
 
 ## Features
-This project reads from three source(JSON, CSV, XML) then combines the common fields from these sources into two output CSV files. One that only contains records that have no suspicious data present and the file contains all the data that contains suspicious data.
-- Attemps to load franfurter API for accurate currency conversion
-- Adds flag column to suspicious data CSV that clear shows the reasons as to why a record is determined to be suspicious e.g. negative amounts for transactions
-- Handles inconsistent data by forcing a naming convetion onto the dataframes generated from the sources e.g. altering the 'id' column from the JSON source into 'transaction_id' to match other sources
-- Handles inconsisten data entry in records e.g. In the XML file the data and time are store inconsistently this project handles these inconsistencies before spliting the values into date and time
-- This project also makes sure that the time and date are entered correctly after the split e.g. if the date was entered incorrectly but the time was correct in format the project would only flag the date and vice versus however if both are missing or incorrect the project will flag both
-- This project includes a testscript used to test function from the main script
-- The all currency is standardised to USD using live rates from  [Frankfurter API](https://www.frankfurter.dev/) this however is only performed on the cleaned dataframe as to save on computational resources and time
-- Saves the final outputs into two CSV files for ease of use by analyst
+This project reads from three sources (JSON, CSV, XML) then combines the common fields from these sources into two output CSV files:
+- One file that only contains records with no suspicious data present.
+- One file that contains all data with suspicious values.
+Key features:
+- Attempts to load the Frankfurter API for accurate currency conversion.
+- Adds a flag column to the suspicious data CSV that clearly shows the reasons why a record is determined to be suspicious (e.g., negative transaction amounts).
+- Handles inconsistent data by enforcing a naming convention on the DataFrames generated from the sources (e.g., renaming the id column from the JSON source to transaction_id to match other sources).
+- Handles inconsistent data entry in records (e.g., in the XML file the date and time are stored inconsistently; this project standardizes them before splitting values into date and time).
+- Ensures that the time and date are entered correctly after splitting (e.g., if the date was incorrect but the time was correct, the project only flags the date, and vice versa. If both are missing or incorrect, the project flags both).
+- Includes a unit testing script to validate functions from the main script.
+- All currency is standardized to USD using live rates from the  [Frankfurter API](https://www.frankfurter.dev/
+This is only performed on the cleaned DataFrame to save computational resources and time.
+- Saves the final outputs into two CSV files for ease of use by analysts as mentioned above.
 
 ## Assumptions
-- I assumed this project was for small to medium source files as if large scale source are to be used the way data is read should be adjusted to account for the scale e.g. loading smaller batches into memory and processing those before flushing memory and then loading the next chunk.
-- I assumed that although there is an inconsistent format between different sources. that data from a specific source would maintain the same format e.g. a JSON file will have the same format as the JSON file provided.
-- I assumed that dat unique to a single source would not be needed in the combined output hence certain fields were dropped in the final output e.g. the 'meta' field from the JSON file
-- I assumed saving the results as two CSV files would be sufficient as there was no link or mention of a SQL database 
-- I assumed that those who will run this project have python installed on their computer
+- The project is intended for small to medium source files. For large-scale sources, the data reading method should be adjusted (e.g., loading smaller batches into memory, processing them, then flushing memory before loading the next chunk).
+- Although formats are inconsistent across different sources, data from the same source is assumed to be consistent (e.g., all JSON files will share the same format as the provided JSON file).
+- Data unique to a single source is not needed in the combined output; these fields are dropped in the final output (e.g., the meta field from the JSON file).
+- Saving results as two CSV files is sufficient, since no SQL database was specified or required.
+- Users running this project are assumed to have Python installed on their computer.
 ## Installation
 
 Clone the repository and install dependencies:

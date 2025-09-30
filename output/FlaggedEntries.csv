@@ -1,0 +1,7 @@
+customer_id,transaction_id,date,time,amount,currency,payment_method,source_id,flags
+C-9003,ON-2003,2025-08-31,09:00:00+00:00,-1.0,USD,card,online,"['Invalid Time Value', 'Invalid Amount']"
+C-84222,S-A-1004,2025-08-31,12:05:30+02:00,-5.0,ZAR,card,CT-01,"['Invalid Time Value', 'Invalid Amount']"
+C-84224,S-A-1006,2025-08-31,13:45:12+02:00,0.0,ZAR,card,CT-02,"['Invalid Time Value', 'Invalid Amount']"
+C--1,PT-3003,_,,0.0,USD,card,ACME-PARTNER,"['Invalid Customer ID', 'Invalid Date Value', 'Invalid Time Value', 'Invalid Amount']"
+C--1,ON-2002,2025-08-31,08:44:22+00:00,250.0,ZAR,wallet,online,"['Invalid Customer ID', 'Invalid Time Value']"
+C--1,S-A-1003,2025-08-31,11:22:00+02:00,120.0,ZAR,card,CT-02,"['Invalid Customer ID', 'Invalid Time Value']"
